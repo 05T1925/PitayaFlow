@@ -1,0 +1,37 @@
+# Local credentials and runtime data
+.env
+.env.*
+!.env.example
+.runtime/
+.dsh/
+data/private/
+recordings/
+secrets/
+.local/
+.artifacts/
+.cache/
+
+# Build and tool output
+node_modules/
+target/
+dist/
+coverage/
+__pycache__/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pnpm-store/
+.turbo/
+.vite/
+playwright-report/
+test-results/
+*.pyc
+*.tsbuildinfo
+*.class
+*.log
+*.swp
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini

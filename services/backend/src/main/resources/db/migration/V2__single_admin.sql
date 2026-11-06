@@ -1,0 +1,3 @@
+ALTER TABLE pf_user
+  ADD COLUMN admin_slot TINYINT GENERATED ALWAYS AS (CASE WHEN role='ADMIN' THEN 1 ELSE NULL END) STORED,
+  ADD UNIQUE KEY uk_one_admin (admin_slot);

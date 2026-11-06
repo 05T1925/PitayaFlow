@@ -1,0 +1,27 @@
+{
+  "source": {"source_id":"source-a","source_revision":3,"outline_revision":0,"segments":[
+    {"id":"seg-q1","start_ms":100,"end_ms":300,"text":"Question one?","role":"INTERVIEWER"},
+    {"id":"seg-a1","start_ms":310,"end_ms":600,"text":"Answer one.","role":"ME"},
+    {"id":"seg-q2","start_ms":700,"end_ms":900,"text":"Question two?","role":"INTERVIEWER"},
+    {"id":"seg-a2","start_ms":910,"end_ms":1200,"text":"Answer two.","role":"ME"}
+  ]},
+  "cases": [
+    {"name":"complete","structurally_valid":true,"publish_valid":true,"draft":{"source_id":"source-a","source_revision":3,"outline_revision":0,"questions":[
+      {"id":"q-1","question_refs":[{"segment_id":"seg-q1","start_ms":100,"end_ms":300,"text":"Question one?"}],"answer_refs":[{"segment_id":"seg-a1","start_ms":310,"end_ms":600,"text":"Answer one."}],"status":"reviewed","covered_points":["Recorded answer"],"gaps":[],"advice":"Verify details.","reason":"Knowledge not checked"},
+      {"id":"q-2","question_refs":[{"segment_id":"seg-q2","start_ms":700,"end_ms":900,"text":"Question two?"}],"answer_refs":[{"segment_id":"seg-a2","start_ms":910,"end_ms":1200,"text":"Answer two."}],"status":"reviewed","covered_points":["Recorded answer"],"gaps":[],"advice":"Verify details.","reason":"Knowledge not checked"}
+    ],"unassigned_refs":[]}},
+    {"name":"missing_answer","structurally_valid":true,"publish_valid":false,"draft":{"source_id":"source-a","source_revision":3,"outline_revision":0,"questions":[
+      {"id":"q-1","question_refs":[{"segment_id":"seg-q1","start_ms":100,"end_ms":300,"text":"Question one?"}],"answer_refs":[{"segment_id":"seg-a1","start_ms":310,"end_ms":600,"text":"Answer one."}],"status":"reviewed","covered_points":[],"gaps":[],"advice":"Verify.","reason":"Check"},
+      {"id":"q-2","question_refs":[{"segment_id":"seg-q2","start_ms":700,"end_ms":900,"text":"Question two?"}],"answer_refs":[],"status":"insufficient_evidence","covered_points":[],"gaps":[],"advice":"Verify.","reason":"No answer"}
+    ],"unassigned_refs":[]}},
+    {"name":"forged_text","structurally_valid":true,"publish_valid":false,"draft":{"source_id":"source-a","source_revision":3,"outline_revision":0,"questions":[
+      {"id":"q-1","question_refs":[{"segment_id":"seg-q1","start_ms":100,"end_ms":300,"text":"Question one?"}],"answer_refs":[{"segment_id":"seg-a1","start_ms":310,"end_ms":600,"text":"Invented experience."}],"status":"reviewed","covered_points":[],"gaps":[],"advice":"Verify.","reason":"Check"},
+      {"id":"q-2","question_refs":[{"segment_id":"seg-q2","start_ms":700,"end_ms":900,"text":"Question two?"}],"answer_refs":[{"segment_id":"seg-a2","start_ms":910,"end_ms":1200,"text":"Answer two."}],"status":"reviewed","covered_points":[],"gaps":[],"advice":"Verify.","reason":"Check"}
+    ],"unassigned_refs":[]}},
+    {"name":"self_parent","structurally_valid":true,"publish_valid":false,"draft":{"source_id":"source-a","source_revision":3,"outline_revision":0,"questions":[
+      {"id":"q-1","parent_id":"q-1","question_refs":[{"segment_id":"seg-q1","start_ms":100,"end_ms":300,"text":"Question one?"}],"answer_refs":[{"segment_id":"seg-a1","start_ms":310,"end_ms":600,"text":"Answer one."}],"status":"reviewed","covered_points":[],"gaps":[],"advice":"Verify.","reason":"Check"},
+      {"id":"q-2","question_refs":[{"segment_id":"seg-q2","start_ms":700,"end_ms":900,"text":"Question two?"}],"answer_refs":[{"segment_id":"seg-a2","start_ms":910,"end_ms":1200,"text":"Answer two."}],"status":"reviewed","covered_points":[],"gaps":[],"advice":"Verify.","reason":"Check"}
+    ],"unassigned_refs":[]}},
+    {"name":"malformed","structurally_valid":false,"publish_valid":false,"draft":{"source_id":"source-a","source_revision":3,"questions":[],"unassigned_refs":[]}}
+  ]
+}

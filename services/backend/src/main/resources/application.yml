@@ -1,0 +1,63 @@
+server:
+  port: ${PF_API_PORT:18080}
+  tomcat:
+    max-swallow-size: -1
+spring:
+  datasource:
+    url: ${PF_DB_URL:jdbc:mysql://127.0.0.1:33761/pitayaflow?useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${PF_DB_USER:pf_s1}
+    password: ${PF_DB_PASSWORD}
+  data:
+    redis:
+      host: ${PF_REDIS_HOST:127.0.0.1}
+      port: ${PF_REDIS_PORT:16381}
+      password: ${PF_REDIS_PASSWORD}
+  servlet:
+    multipart:
+      max-file-size: 32MB
+      max-request-size: 33MB
+  flyway:
+    enabled: true
+rocketmq:
+  name-server: ${PF_MQ_NAMESRV:127.0.0.1:19876}
+  producer:
+    group: pf-s1-producer
+    send-message-timeout: 3000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+pf:
+  role: ${PF_ROLE:api}
+  shutdown-file: ${PF_SHUTDOWN_FILE:}
+  bootstrap-token: ${PF_BOOTSTRAP_TOKEN:}
+  minio:
+    endpoint: ${PF_MINIO_ENDPOINT:http://127.0.0.1:19001}
+    access-key: ${PF_MINIO_ACCESS_KEY}
+    secret-key: ${PF_MINIO_SECRET_KEY}
+    bucket: ${PF_MINIO_BUCKET:pf-s1-private}
+  probe:
+    executable: ${PF_FFPROBE:ffprobe}
+    timeout-seconds: 12
+    fault-stream-packets: ${PF_PROBE_FAULT_STREAM_PACKETS:false}
+  agent:
+    contracts-dir: ${PF_CONTRACTS_DIR:packages/contracts}
+    dsh-source: ${PF_DSH_SOURCE:}
+    node: ${PF_NODE:node}
+    bridge-url: ${PF_AGENT_BRIDGE_URL:http://127.0.0.1:18080}
+    scenario: ${PF_AGENT_SCENARIO:success}
+    result-hold-ms: ${PF_AGENT_RESULT_HOLD_MS:0}
+  review:
+    scripted-enabled: ${PF_REVIEW_SCRIPTED_ENABLED:false}
+    scenario: ${PF_REVIEW_SCENARIO:success}
+    result-hold-ms: ${PF_REVIEW_RESULT_HOLD_MS:0}
+  asr:
+    endpoint: ${PF_ASR_ENDPOINT:}
+    api-key: ${PF_ASR_API_KEY:}
+    model: ${PF_ASR_MODEL:nova-3}
+    language: ${PF_ASR_LANGUAGE:multi}
+    language-hints: ${PF_ASR_LANGUAGE_HINTS:zh,en}
+    multichannel: ${PF_ASR_MULTICHANNEL:true}
+    allow-local-fixture: ${PF_ASR_ALLOW_LOCAL_FIXTURE:false}
+    ffmpeg: ${PF_FFMPEG:ffmpeg}

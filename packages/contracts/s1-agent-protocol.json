@@ -1,0 +1,20 @@
+{
+  "version": "s1-int-1",
+  "run_spec": {
+    "required": {
+      "task_id": "string", "run_id": "string", "attempt_id": "string", "execution_epoch": "integer",
+      "claim_token": "string", "owner_id": "string", "case_id": "string", "source_id": "string",
+      "source_revision": "integer", "source_sha256": "string", "speaker_revision": "integer",
+      "rule_version": "string", "tool_version": "string", "deadline_ms": "integer", "dsh_source": "string",
+      "bridge_url": "string", "grant_token": "string"
+    }
+  },
+  "draft": {
+    "required": {"case_id": "string", "transcript_revision": "string", "assessment": "string", "citation": "object"},
+    "citation_required": {"transcript_revision": "string", "segment_id": "string", "start_ms": "integer", "end_ms": "integer"}
+  },
+  "bridge_result": {
+    "required": {"task_id": "string", "run_id": "string", "attempt_id": "string", "execution_epoch": "integer",
+      "draft": "object", "registered_tools": "array", "validation": "object", "cleanup": "object"}
+  }
+}

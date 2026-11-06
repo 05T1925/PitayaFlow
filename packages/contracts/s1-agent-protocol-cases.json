@@ -1,0 +1,12 @@
+[
+  {"kind":"draft","valid":true,"value":{"case_id":"c","transcript_revision":"r","assessment":"a","citation":{"transcript_revision":"r","segment_id":"s","start_ms":1,"end_ms":2}}},
+  {"kind":"draft","valid":false,"value":{"case_id":"c","transcript_revision":"r","citation":{"transcript_revision":"r","segment_id":"s","start_ms":1,"end_ms":2}}},
+  {"kind":"draft","valid":false,"value":{"case_id":"c","transcript_revision":"r","assessment":"a","citation":{"transcript_revision":"r","segment_id":"s","start_ms":-1,"end_ms":2}}},
+  {"kind":"run_spec","valid":true,"value":{"task_id":"t","run_id":"r","attempt_id":"a","execution_epoch":1,"claim_token":"c","owner_id":"o","case_id":"c","source_id":"s","source_revision":1,"source_sha256":"h","speaker_revision":1,"rule_version":"v","tool_version":"v","deadline_ms":1000,"dsh_source":"d","bridge_url":"http://127.0.0.1:1","grant_token":"g"}},
+  {"kind":"run_spec","valid":false,"value":{"task_id":"t","run_id":"r","attempt_id":"a","execution_epoch":-1,"claim_token":"c","owner_id":"o","case_id":"c","source_id":"s","source_revision":1,"source_sha256":"h","speaker_revision":1,"rule_version":"v","tool_version":"v","deadline_ms":1000,"dsh_source":"d","bridge_url":"http://127.0.0.1:1","grant_token":"g"}},
+  {"kind":"bridge_result","valid":true,"value":{"task_id":"t","run_id":"r","attempt_id":"a","execution_epoch":1,"draft":{},"registered_tools":[],"validation":{},"cleanup":{}}},
+  {"kind":"bridge_result","valid":false,"value":{"task_id":"t","run_id":"r","attempt_id":"a","execution_epoch":1,"draft":{},"registered_tools":"tool","validation":{},"cleanup":{}}},
+  {"kind":"draft","valid":true,"value":{"case_id":"c","transcript_revision":"r","assessment":"a","citation":{"transcript_revision":"r","segment_id":"s","start_ms":9007199254740990,"end_ms":9007199254740991}}},
+  {"kind":"draft","valid":false,"value":{"case_id":"c","transcript_revision":"r","assessment":"a","citation":{"transcript_revision":"r","segment_id":"s","start_ms":9007199254740991,"end_ms":9007199254740992}}},
+  {"kind":"run_spec","valid":false,"value":{"task_id":"t","run_id":"r","attempt_id":"a","execution_epoch":9007199254740992,"claim_token":"c","owner_id":"o","case_id":"c","source_id":"s","source_revision":1,"source_sha256":"h","speaker_revision":1,"rule_version":"v","tool_version":"v","deadline_ms":1000,"dsh_source":"d","bridge_url":"http://127.0.0.1:1","grant_token":"g"}}
+]

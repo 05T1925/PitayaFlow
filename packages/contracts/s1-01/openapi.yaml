@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info:
+  title: PitayaFlow S1-01 private media and probe
+  version: 0.1.0
+servers:
+  - url: http://127.0.0.1:18080
+components:
+  securitySchemes:
+    bearer: {type: http, scheme: bearer}
+  schemas:
+    Media:
+      type: object
+      required: [media_id, filename, size_bytes, kind, content_version]
+      properties:
+        media_id: {type: string, format: uuid}
+        filename: {type: string}
+        size_bytes: {type: integer, format: int64}
+        kind: {type: string, enum: [WAV, MP4]}
+        content_version: {type: integer, format: int64}
+    Job:
+      type: object
+      required: [task_id, media_id, media_version, status, cancel_requested, epoch]
+      properties:
+        task_id: {type: string, format: uuid}
+        media_id: {type: string, format: uuid}
+        media_version: {type: integer, format: int64}
+        status: {type: string, enum: [QUEUED, RUNNING, SUCCEEDED, FAILED, CANCELLED]}
+        cancel_requested: {type: boolean}
+        epoch: {type: integer, format: int64}
+        result:
+          type: object
+          required: [media_version, content_sha256, probe]
+          properties:
+            media_version: {type: integer, format: int64}
+            content_sha256: {type: string}
+            probe:
+              type: object
+              required: [kind, duration_seconds, format]
+              properties:
+                kind: {type: string, enum: [WAV, MP4]}
+                duration_seconds: {type: number}
+                format: {type: string}
+paths:
+  /api/v1/bootstrap:
+    post:
+      summary: One-time admin initialization; requires configured bootstrap token and an empty user table.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, username, password]
+              properties:
+                token: {type: string}
+                username: {type: string}
+                password: {type: string}
+      responses: {'201': {description: Created}, '409': {description: Already initialized}}
+  /api/v1/login:
+    post:
+      summary: Authenticate and issue a Redis-backed opaque bearer token.
+      responses: {'200': {description: Token and user identity}}
+  /api/v1/users:
+    post:
+      security: [{bearer: []}]
+      summary: Admin creates a private test user; public registration is disabled.
+      responses: {'201': {description: Created}}
+  /api/v1/media:
+    get:
+      security: [{bearer: []}]
+      summary: List only caller-owned active media.
+      responses: {'200': {description: Media list}}
+    post:
+      security: [{bearer: []}]
+      summary: Upload a private WAV or audio MP4, validated by ffprobe.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: {type: string, format: binary}
+      responses: {'201': {description: 'Media', content: {application/json: {schema: {$ref: '#/components/schemas/Media'}}}}}
+  /api/v1/media/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+    get:
+      security: [{bearer: []}]
+      responses: {'200': {description: Owner media}, '404': {description: Absent or not owned}}
+    delete:
+      security: [{bearer: []}]
+      responses: {'204': {description: Tombstoned and cleanup requested}, '404': {description: Absent or not owned}}
+  /api/v1/media/{id}/download:
+    parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+    get:
+      security: [{bearer: []}]
+      responses: {'200': {description: Private media bytes}, '404': {description: Absent or not owned}}
+  /api/v1/media/{mediaId}/probe:
+    parameters: [{name: mediaId, in: path, required: true, schema: {type: string, format: uuid}}]
+    post:
+      security: [{bearer: []}]
+      parameters: [{name: Idempotency-Key, in: header, required: true, schema: {type: string, minLength: 8, maxLength: 100}}]
+      responses: {'202': {description: Durable job accepted, content: {application/json: {schema: {$ref: '#/components/schemas/Job'}}}}, '409': {description: Conflicting idempotency input}}
+  /api/v1/jobs/{id}:
+    parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+    get:
+      security: [{bearer: []}]
+      responses: {'200': {description: Durable owner-only snapshot, content: {application/json: {schema: {$ref: '#/components/schemas/Job'}}}}, '404': {description: Absent or not owned}}
+  /api/v1/jobs/{id}/cancel:
+    parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+    post:
+      security: [{bearer: []}]
+      responses: {'200': {description: Cancel requested; RUNNING may stop shortly}}

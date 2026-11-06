@@ -1,0 +1,8 @@
+{
+  "case_id": "PF-C001-synthetic",
+  "transcript_revision": "rev-1",
+  "speaker_status": "confirmed",
+  "segments": [
+    { "id": "seg-1", "speaker": "candidate", "start_ms": 1000, "end_ms": 4200, "text": "I used a queue to process jobs." }
+  ]
+}

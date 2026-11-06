@@ -1,0 +1,35 @@
+{
+  "name": "pitayaflow-s0-dsh-bootstrap",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "demo:success": "node services/agent-runtime/bootstrap.mjs success",
+    "demo:forbidden": "node services/agent-runtime/bootstrap.mjs forbidden",
+    "demo:invalid": "node services/agent-runtime/bootstrap.mjs invalid",
+    "demo:unknown-speaker": "node services/agent-runtime/bootstrap.mjs unknown-speaker",
+    "demo:startup-failure": "node services/agent-runtime/bootstrap.mjs startup-failure",
+    "demo:malformed": "node services/agent-runtime/bootstrap.mjs malformed",
+    "check:b": "node services/agent-runtime/check-b.mjs",
+    "check:b-r2": "node services/agent-runtime/check-b-r2.mjs",
+    "check:b-r3": "node services/agent-runtime/check-b-r3.mjs",
+    "check:d": "node services/agent-runtime/check-d.mjs",
+    "check:c": "node services/agent-runtime/check-c.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "check:s1-protocol": "node packages/contracts/check-s1-agent-protocol.mjs",
+    "check:s2-review": "node packages/contracts/check-s2-review.mjs",
+    "check:cleanup": "node services/agent-runtime/check-cleanup.mjs",
+    "web:dev": "vite --config apps/web/vite.config.js",
+    "web:build": "vite build --config apps/web/vite.config.js",
+    "web:test": "vitest run --config apps/web/vite.config.js",
+    "check": "node --check services/agent-runtime/bootstrap.mjs && node --check services/agent-runtime/run.mjs && node --check services/agent-runtime/cleanup.mjs && node --check services/agent-runtime/attempt-host.mjs && node --check services/agent-runtime/attempt-worker.mjs && node --check services/agent-runtime/bridge.mjs && node --check packages/dsh-tools/controlled-plugin.mjs && node --check packages/contracts/validate-draft.mjs && node packages/contracts/check.mjs && npm run check:s1-protocol && npm run check:s2-review && npm run check:cleanup && npm run typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "jsdom": "^30.1.3",
+    "typescript": "^6.0.3",
+    "vite": "^7.1.10",
+    "vitest": "^5.1.0",
+    "vue": "^3.5.22"
+  }
+}
