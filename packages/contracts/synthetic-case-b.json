@@ -1,0 +1,8 @@
+{
+  "case_id": "PF-C005-synthetic-b",
+  "transcript_revision": "rev-b1",
+  "speaker_status": "confirmed",
+  "segments": [
+    { "id": "seg-b1", "speaker": "candidate", "start_ms": 700, "end_ms": 2500, "text": "I added an index to the query." }
+  ]
+}

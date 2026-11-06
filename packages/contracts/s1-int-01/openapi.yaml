@@ -1,0 +1,146 @@
+openapi: 3.0.3
+info:
+  title: PitayaFlow synthetic agent slice
+  version: 0.1.0
+  description: Human-written synthetic evidence only; no ASR or real interview evaluation.
+servers:
+  - url: http://127.0.0.1:18080
+security:
+  - session: []
+paths:
+  /api/v1/media/{mediaId}/synthetic-sources:
+    post:
+      summary: Bind a fixed synthetic fixture to owned private media
+      parameters:
+        - $ref: '#/components/parameters/mediaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fixture_id]
+              properties:
+                fixture_id:
+                  type: string
+                  enum: [a, b, unknown]
+      responses:
+        '201':
+          description: New immutable source revision
+        '404':
+          description: Media not owned or active
+  /api/v1/synthetic-sources/{sourceId}:
+    get:
+      summary: Read current owned synthetic source and its revision
+      parameters:
+        - $ref: '#/components/parameters/sourceId'
+      responses:
+        '200':
+          description: Current synthetic source snapshot
+        '404':
+          description: Source not owned or media inactive
+  /api/v1/synthetic-sources/{sourceId}/revisions:
+    post:
+      summary: Append a new immutable source and speaker revision
+      parameters:
+        - $ref: '#/components/parameters/sourceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fixture_id]
+              properties:
+                fixture_id:
+                  type: string
+                  enum: [a, b, unknown]
+      responses:
+        '201':
+          description: New revision
+        '404':
+          description: Source not owned or media inactive
+  /api/v1/synthetic-sources/{sourceId}/revisions/{revision}:
+    get:
+      summary: Re-read one immutable source revision by owner
+      parameters:
+        - $ref: '#/components/parameters/sourceId'
+        - name: revision
+          in: path
+          required: true
+          schema: {type: integer, minimum: 1}
+      responses:
+        '200':
+          description: Original synthetic source snapshot with content hash
+        '404':
+          description: Source revision not owned or absent
+  /api/v1/media/{mediaId}/synthetic-analysis:
+    post:
+      summary: Persist agent task and outbox for one owned source revision
+      parameters:
+        - $ref: '#/components/parameters/mediaId'
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9_-]{8,100}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [source_id]
+              properties:
+                source_id:
+                  type: string
+                  format: uuid
+      responses:
+        '202':
+          description: Durable task accepted or identical request reused
+        '404':
+          description: Cross-owner or cross-media source rejected
+        '409':
+          description: Idempotency key reused with different input
+  /api/v1/jobs/{taskId}:
+    get:
+      summary: Owner-only durable job and result snapshot
+      parameters:
+        - $ref: '#/components/parameters/taskId'
+      responses:
+        '200':
+          description: Job status and optional validated synthetic result
+        '404':
+          description: Task not owned
+  /api/v1/jobs/{taskId}/cancel:
+    post:
+      summary: Request cancellation; terminal status may follow later
+      parameters:
+        - $ref: '#/components/parameters/taskId'
+      responses:
+        '200':
+          description: Current job snapshot
+        '404':
+          description: Task not owned
+components:
+  securitySchemes:
+    session:
+      type: http
+      scheme: bearer
+  parameters:
+    mediaId:
+      name: mediaId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    sourceId:
+      name: sourceId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    taskId:
+      name: taskId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}

@@ -1,0 +1,20 @@
+{
+  "version": "s2-review-script-2",
+  "review_draft": {
+    "required": {
+      "source_id": "string", "source_revision": "integer", "outline_revision": "integer",
+      "questions": "array", "unassigned_refs": "array"
+    },
+    "reference_required": {
+      "segment_id": "string", "start_ms": "integer", "end_ms": "integer", "text": "string"
+    },
+    "question_required": {
+      "id": "string", "question_refs": "array", "answer_refs": "array", "status": "string",
+      "covered_points": "array", "gaps": "array", "advice": "string", "reason": "string"
+    },
+    "source_fields": {"material_background":"array", "practice_card":"object", "revised_answer":"text"}
+  },
+  "review_result": {
+    "source_kinds": ["spoken_quote", "material_background", "practice_suggestion"]
+  }
+}

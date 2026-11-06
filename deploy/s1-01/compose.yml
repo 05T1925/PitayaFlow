@@ -1,0 +1,61 @@
+name: ${PF_COMPOSE_PROJECT:-pf-s1-01}
+services:
+  mysql:
+    image: ${PF_MYSQL_IMAGE:-mysql:8.0@sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PF_DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: pitayaflow
+      MYSQL_USER: pf_s1
+      MYSQL_PASSWORD: ${PF_DB_PASSWORD}
+    ports: ["127.0.0.1:${PF_DB_PORT:-33761}:3306"]
+    volumes: ["pf_s1_mysql:/var/lib/mysql"]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      retries: 20
+  redis:
+    image: ${PF_REDIS_IMAGE:-redis:7.4-alpine@sha256:8da19c7399dca900c6822a1cf30f9d2285585e2c4b457ff4095b0f4500054d3f}
+    command: ["sh", "-c", "redis-server --appendonly yes --requirepass \"$$PF_REDIS_PASSWORD\""]
+    environment:
+      PF_REDIS_PASSWORD: ${PF_REDIS_PASSWORD}
+    ports: ["127.0.0.1:${PF_REDIS_PORT:-16381}:6379"]
+    volumes: ["pf_s1_redis:/data"]
+  minio-init:
+    image: ${PF_MINIO_IMAGE:-bitnamilegacy/minio:2025.7.23-debian-12-r5@sha256:6dabb4a2088c9a79908de3bc05f4586c23ad2182c8908e7e3acbf61c1467fb20}
+    user: "0:0"
+    entrypoint: ["sh", "-c", "chown -R 1001:1001 /bitnami/minio/data"]
+    volumes: ["pf_s1_minio:/bitnami/minio/data"]
+  minio:
+    image: ${PF_MINIO_IMAGE:-bitnamilegacy/minio:2025.7.23-debian-12-r5@sha256:6dabb4a2088c9a79908de3bc05f4586c23ad2182c8908e7e3acbf61c1467fb20}
+    environment:
+      MINIO_ROOT_USER: ${PF_MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${PF_MINIO_SECRET_KEY}
+    ports: ["127.0.0.1:${PF_MINIO_PORT:-19001}:9000", "127.0.0.1:${PF_MINIO_CONSOLE_PORT:-19002}:9001"]
+    volumes: ["pf_s1_minio:/bitnami/minio/data"]
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+  namesrv:
+    image: ${PF_ROCKETMQ_IMAGE:-apache/rocketmq:5.3.4@sha256:d57ee4ebbd9d7bb6e185775bde41c128e98f185b25bf0b05c77d4e6c010572b8}
+    command: ["sh", "mqnamesrv"]
+    ports: ["127.0.0.1:${PF_MQ_NAMESRV_PORT:-19876}:9876"]
+  broker-init:
+    image: ${PF_ROCKETMQ_IMAGE:-apache/rocketmq:5.3.4@sha256:d57ee4ebbd9d7bb6e185775bde41c128e98f185b25bf0b05c77d4e6c010572b8}
+    user: "0:0"
+    entrypoint: ["sh", "-c", "chown -R 3000:3000 /home/rocketmq/store"]
+    volumes: ["pf_s1_broker:/home/rocketmq/store"]
+  broker:
+    image: ${PF_ROCKETMQ_IMAGE:-apache/rocketmq:5.3.4@sha256:d57ee4ebbd9d7bb6e185775bde41c128e98f185b25bf0b05c77d4e6c010572b8}
+    command: ["sh", "mqbroker", "-n", "namesrv:9876", "-c", "/home/rocketmq/broker.conf"]
+    volumes: ["${PF_BROKER_CONFIG:-./broker.conf}:/home/rocketmq/broker.conf:ro", "pf_s1_broker:/home/rocketmq/store"]
+    ports: ["127.0.0.1:${PF_MQ_BROKER_PORT:-10911}:${PF_MQ_BROKER_PORT:-10911}", "127.0.0.1:${PF_MQ_BROKER_VIP_PORT:-10909}:${PF_MQ_BROKER_VIP_PORT:-10909}"]
+    depends_on:
+      namesrv:
+        condition: service_started
+      broker-init:
+        condition: service_completed_successfully
+volumes:
+  pf_s1_mysql:
+  pf_s1_redis:
+  pf_s1_minio:
+  pf_s1_broker:
